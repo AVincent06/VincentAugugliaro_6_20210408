@@ -5,7 +5,7 @@
  *  Auteur      : Vincent Augugliaro
  *  Version     : 0.1
  *  Création    : 07/04/2021
- *  Der. modif  : 07/04/2021
+ *  Der. modif  : 09/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
  *  Dépendances : 'bcrypt','jsonwebtoken','../models/user'
  *******************************************************************************/
@@ -13,7 +13,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const User = require('../models/user');
+const User = require('../models/auth');
 
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)

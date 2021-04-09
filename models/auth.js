@@ -1,23 +1,23 @@
 /*******************************************************************************
- *  Nom         : thing.js
+ *  Nom         : user.js
  *  Description : schéma de données strict
  *  Type        : JavaScript
  *  Auteur      : Vincent Augugliaro
  *  Version     : 0.1
  *  Création    : 07/04/2021
- *  Der. modif  : 07/04/2021
+ *  Der. modif  : 09/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
- *  Dépendances : 'mongoose'
+ *  Dépendances : 'mongoose','mongoose-unique-validator'
  *******************************************************************************/
 
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
-const thingSchema = mongoose.Schema({
-    title : { type : String, required : true },
-    description : { type : String, required : true },
-    imageUrl : { type : String, required : true },
-    userId : { type : String, required : true },
-    price : { type : Number, required : true }
+const userSchema = mongoose.Schema({
+    email : { type : String, required : true, unique : true },
+    password : { type : String, required : true }
 });
 
-module.exports = mongoose.model('Thing', thingSchema);
+userSchema.plugin(uniqueValidator);
+
+module.exports = mongoose.model('User', userSchema);
