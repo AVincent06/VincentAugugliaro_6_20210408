@@ -3,11 +3,11 @@
  *  Description : framework Express
  *  Type        : JavaScript
  *  Auteur      : Vincent Augugliaro
- *  Version     : 0.1
+ *  Version     : 0.2
  *  Création    : 07/04/2021
- *  Der. modif  : 07/04/2021
+ *  Der. modif  : 09/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
- *  Dépendances : 'express','body-parser','mongoose','path','./routes/stuff','./routes/user'
+ *  Dépendances : 'express','body-parser','mongoose','path','./routes/sauce','./routes/auth'
  *******************************************************************************/
 
 require('dotenv').config();
@@ -16,8 +16,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
 
-const stuffRoutes = require('./routes/stuff');
-const userRoutes = require('./routes/user');
+const sauceRoutes = require('./routes/sauce');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
@@ -42,7 +42,7 @@ app.use(bodyParser.json());    // extrait l'objet JSON de la demande
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 /* routes */
-app.use('/api/stuff', stuffRoutes);
-app.use('/api/auth', userRoutes);
+app.use('/api/sauce', sauceRoutes);
+app.use('/api/auth', authRoutes);
 
 module.exports = app;
