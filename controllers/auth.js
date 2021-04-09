@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Nom         : user.js
+ *  Nom         : auth.js
  *  Description : logique métier des routes
  *  Type        : JavaScript
  *  Auteur      : Vincent Augugliaro
@@ -7,7 +7,7 @@
  *  Création    : 07/04/2021
  *  Der. modif  : 09/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
- *  Dépendances : 'bcrypt','jsonwebtoken','../models/user'
+ *  Dépendances : 'bcrypt','jsonwebtoken','../models/auth'
  *******************************************************************************/
 
 const bcrypt = require('bcrypt');

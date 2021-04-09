@@ -42,7 +42,7 @@ app.use(bodyParser.json());    // extrait l'objet JSON de la demande
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 /* routes */
-app.use('/api/sauce', sauceRoutes);
+app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', authRoutes);
 
 module.exports = app;
