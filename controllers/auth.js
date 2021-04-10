@@ -3,9 +3,9 @@
  *  Description : logique métier des routes
  *  Type        : JavaScript
  *  Auteur      : Vincent Augugliaro
- *  Version     : 0.1
+ *  Version     : 0.2
  *  Création    : 07/04/2021
- *  Der. modif  : 09/04/2021
+ *  Der. modif  : 10/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
  *  Dépendances : 'bcrypt','jsonwebtoken','../models/auth'
  *******************************************************************************/
@@ -13,16 +13,16 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const User = require('../models/auth');
+const Auth = require('../models/auth');
 
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
         .then((hash) => {
-            const user = new User({
+            const auth = new Auth({
                 email : req.body.email,
                 password : hash
             });
-            user.save()
+            auth.save()
                 .then(() => res.status(201).json({ message : 'Utilisateur créé !' }))
                 .catch((error) => res.status(400).json({ error }));
         })
@@ -30,16 +30,16 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-    User.findOne({ email : req.body.email })
-        .then((user) => {
-            if(!user) return res.status(401).json({ error : 'utilisateur non trouvé !'});
-            bcrypt.compare(req.body.password, user.password)
+    Auth.findOne({ email : req.body.email })
+        .then((auth) => {
+            if(!auth) return res.status(401).json({ error : 'utilisateur non trouvé !'});
+            bcrypt.compare(req.body.password, auth.password)
                 .then((valid) => {
                     if(!valid) return res.status(401).json({ error : 'mot de passe incorrect !'});
                     res.status(200).json({
-                        userId : user._id,
+                        authId : auth._id,
                         token : jwt.sign(
-                            { userId : user._id },
+                            { authId : auth._id },
                             'RANDOM_TOKEN_SECRET',
                             { expiresIn : '24h'}
                         )
