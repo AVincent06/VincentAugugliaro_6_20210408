@@ -5,13 +5,13 @@
  *  Auteur      : Vincent Augugliaro
  *  Version     : 0.2
  *  Création    : 07/04/2021
- *  Der. modif  : 09/04/2021
+ *  Der. modif  : 10/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
  *  Dépendances : 'body-parser','../models/sauce','fs'
  *******************************************************************************/
 
 const { json } = require('body-parser');    // /!\/!\/!\ TROUVER SON ORIGINE OU EFFACER /!\/!\/!\
-const Sauce = require('../models/sauce') //importation du modèle
+const Sauce = require('../models/sauce');   //importation du modèle
 const fs = require('fs');
 const sauce = require('../models/sauce');   // /!\/!\/!\ TROUVER SON ORIGINE OU EFFACER /!\/!\/!\
 
@@ -20,7 +20,11 @@ exports.createSauce = (req, res, next) => {
     delete sauceObject._id;
     const sauce = new Sauce({
         ...sauceObject,
-        imageUrl : `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        imageUrl : `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+        likes : 0,
+        dislikes : 0,
+        usersLiked : [],
+        usersDisliked : []
     });
     sauce.save()
         .then(() => res.status(201).json({ message : 'sauce enregistrée !'}))
