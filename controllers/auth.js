@@ -3,9 +3,9 @@
  *  Description : logique métier des routes
  *  Type        : JavaScript
  *  Auteur      : Vincent Augugliaro
- *  Version     : 0.2
+ *  Version     : 0.3
  *  Création    : 07/04/2021
- *  Der. modif  : 10/04/2021
+ *  Der. modif  : 12/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
  *  Dépendances : 'bcrypt','jsonwebtoken','../models/auth'
  *******************************************************************************/
@@ -37,9 +37,9 @@ exports.login = (req, res, next) => {
                 .then((valid) => {
                     if(!valid) return res.status(401).json({ error : 'mot de passe incorrect !'});
                     res.status(200).json({
-                        authId : auth._id,
+                        userId : auth._id,
                         token : jwt.sign(
-                            { authId : auth._id },
+                            { userId : auth._id },
                             'RANDOM_TOKEN_SECRET',
                             { expiresIn : '24h'}
                         )
