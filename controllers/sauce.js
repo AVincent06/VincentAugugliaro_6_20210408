@@ -3,9 +3,9 @@
  *  Description : logique métier des routes
  *  Type        : JavaScript
  *  Auteur      : Vincent Augugliaro
- *  Version     : 0.2
+ *  Version     : 0.3
  *  Création    : 07/04/2021
- *  Der. modif  : 10/04/2021
+ *  Der. modif  : 13/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
  *  Dépendances : 'body-parser','../models/sauce','fs'
  *******************************************************************************/
@@ -68,5 +68,49 @@ exports.getAllSauces = (req, res, next) => {
 };
 
 exports.likeSauce = (req, res, next) => {
-    /* do what I have to do */
+    const notFound  = -1;
+    const like      = 1;
+    const dislike   = -1;
+    
+    Sauce.findOne({ _id: req.params.id })
+        .then((sauce) => {
+            /* On controle que l'utilisateur ne soit pas le créateur de la sauce 
+            if(sauce.userId == req.body.userId) {
+                res.status(205).json({message : 'like/dislike désactivée pour le créateur de la sauce'});   //403?
+                return;
+            }*/
+
+            const indexInDisliked = sauce.usersDisliked.indexOf(req.body.userId);
+            const indexInLiked = sauce.usersLiked.indexOf(req.body.userId);
+            switch(req.body.like) {
+                case like :
+                    if(indexInDisliked > notFound) {
+                        sauce.usersDisliked.splice(indexInDisliked, 1);
+                        sauce.dislikes = sauce.usersDisliked.length;
+                    }
+                    if(indexInLiked == notFound) sauce.likes = sauce.usersLiked.push(req.body.userId);
+                    break;
+                case dislike :
+                    if(indexInLiked > notFound) {
+                        sauce.usersLiked.splice(indexInLiked, 1);
+                        sauce.likes = sauce.usersLiked.length;
+                    }
+                    if(indexInDisliked == notFound) sauce.dislikes = sauce.usersDisliked.push(req.body.userId);
+                    break;
+                default : //retour initial
+                    if(indexInDisliked > notFound) {    //l'utilisateur enlève son dislike
+                        sauce.usersDisliked.splice(indexInDisliked, 1);
+                        sauce.dislikes = sauce.usersDisliked.length;
+                    } else {                            //l'utilisateur enlève son like
+                        sauce.usersLiked.splice(indexInLiked, 1);
+                        sauce.likes = sauce.usersLiked.length;
+                    }
+            }
+
+            sauce.save()
+                .then(() => res.status(201).json({ message : 'like/dislike sauvegardée'}))
+                .catch((error) => res.status(400).json({ error })); //raccourci de {error : error}
+            
+        })
+        .catch((error) => res.status(404).json({ error }));
 };
