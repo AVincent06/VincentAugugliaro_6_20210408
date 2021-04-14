@@ -5,7 +5,7 @@
  *  Auteur      : Vincent Augugliaro
  *  Version     : 0.3
  *  Création    : 07/04/2021
- *  Der. modif  : 13/04/2021
+ *  Der. modif  : 14/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
  *  Dépendances : 'body-parser','../models/sauce','fs'
  *******************************************************************************/
@@ -37,8 +37,23 @@ exports.modifySauce = (req, res, next) => {
             ...JSON.parse(req.body.sauce),
             imageUrl : `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
         } : { ...req.body };
+    
+    /* Dans le cas d'un changement d'image, on va supprimer l'ancienne avant d'en perdre la trace */
+    let info = '';
+    if(req.file) {
+        Sauce.findOne({ _id : req.params.id })
+            .then((sauce) => {
+                const filename = sauce.imageUrl.split('/images/')[1];
+                fs.unlink(`images/${filename}`, (error) => {
+                    if (error) res.status(400).json({ error });
+                        else info = 'ancienne image supprimée et ';
+                });
+            })
+            .catch((error) => res.status(500).json({ error }));
+    }
+
     Sauce.updateOne({ _id : req.params.id }, { ...sauceObject, _id : req.params.id })
-    .then(() => res.status(200).json({ message : 'sauce modifiée !'}))
+    .then(() => res.status(200).json({ message : info + 'sauce modifiée !'}))
     .catch((error) => res.status(400).json({ error }));
 };
 
