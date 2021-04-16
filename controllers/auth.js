@@ -3,17 +3,18 @@
  *  Description : logique métier des routes
  *  Type        : JavaScript
  *  Auteur      : Vincent Augugliaro
- *  Version     : 0.3
+ *  Version     : 0.4
  *  Création    : 07/04/2021
- *  Der. modif  : 15/04/2021
+ *  Der. modif  : 16/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
- *  Dépendances : 'bcrypt','jsonwebtoken','../models/auth'
+ *  Dépendances : 'password-validator','bcrypt','jsonwebtoken','../models/auth'
  *******************************************************************************/
 
 /* Importation des middlewares relatifs à la SECURITE */
 const passwordValidator = require('password-validator');//A2:2017
 const bcrypt = require('bcrypt');                       //A2:2017
 
+const emailValidator = require("email-validator");
 const jwt = require('jsonwebtoken');
 
 const Auth = require('../models/auth');
@@ -29,7 +30,15 @@ schema
     .has().not().spaces();
 
 exports.signup = (req, res, next) => {
-    if(schema.validate(req.body.password)) {
+    const emailValidated = emailValidator.validate(req.body.email);
+    const passwordValidated = schema.validate(req.body.password);
+    
+    let feedback1 = '';
+    let feedback2 = '';
+    if(!emailValidated) feedback1 = 'Format email non valide. ';
+    if(!passwordValidated) feedback2 = 'Pour valider le password il faut entre 12 et 64 caractères sans espace et au moins une majuscule, une minuscule et un chiffre';
+
+    if(emailValidated && passwordValidated) {
         bcrypt.hash(req.body.password, 10)
         .then((hash) => {
             const auth = new Auth({
@@ -42,7 +51,7 @@ exports.signup = (req, res, next) => {
         })
         .catch((error) => res.status(500).json({ error }));
     }else{
-        res.status(500).json({ error : 'mot de passe refusé !' });
+        res.status(500).json({ error : feedback1+feedback2 });
     }
 };
 

@@ -3,17 +3,17 @@
  *  Description : logique métier des routes
  *  Type        : JavaScript
  *  Auteur      : Vincent Augugliaro
- *  Version     : 0.3
+ *  Version     : 0.4
  *  Création    : 07/04/2021
- *  Der. modif  : 14/04/2021
+ *  Der. modif  : 16/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
  *  Dépendances : 'body-parser','../models/sauce','fs'
  *******************************************************************************/
 
-const { json } = require('body-parser');    // /!\/!\/!\ TROUVER SON ORIGINE OU EFFACER /!\/!\/!\
+const { json } = require('body-parser');
 const Sauce = require('../models/sauce');   //importation du modèle
 const fs = require('fs');
-const sauce = require('../models/sauce');   // /!\/!\/!\ TROUVER SON ORIGINE OU EFFACER /!\/!\/!\
+//const sauce = require('../models/sauce');   // /!\/!\/!\ TROUVER SON ORIGINE OU EFFACER /!\/!\/!\
 
 exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce);
@@ -86,15 +86,10 @@ exports.likeSauce = (req, res, next) => {
     const notFound  = -1;
     const like      = 1;
     const dislike   = -1;
+    let feedback    = 'interaction pris en compte';
     
     Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
-            /* On controle que l'utilisateur ne soit pas le créateur de la sauce 
-            if(sauce.userId == req.body.userId) {
-                res.status(205).json({message : 'like/dislike désactivée pour le créateur de la sauce'});   //403?
-                return;
-            }*/
-
             const indexInDisliked = sauce.usersDisliked.indexOf(req.body.userId);
             const indexInLiked = sauce.usersLiked.indexOf(req.body.userId);
             switch(req.body.like) {
@@ -103,27 +98,35 @@ exports.likeSauce = (req, res, next) => {
                         sauce.usersDisliked.splice(indexInDisliked, 1);
                         sauce.dislikes = sauce.usersDisliked.length;
                     }
-                    if(indexInLiked == notFound) sauce.likes = sauce.usersLiked.push(req.body.userId);
+                    if(indexInLiked == notFound) {
+                        sauce.likes = sauce.usersLiked.push(req.body.userId);
+                        feedback = 'like pris en compte';
+                    } 
                     break;
                 case dislike :
                     if(indexInLiked > notFound) {
                         sauce.usersLiked.splice(indexInLiked, 1);
                         sauce.likes = sauce.usersLiked.length;
                     }
-                    if(indexInDisliked == notFound) sauce.dislikes = sauce.usersDisliked.push(req.body.userId);
+                    if(indexInDisliked == notFound) {
+                        sauce.dislikes = sauce.usersDisliked.push(req.body.userId);
+                        feedback = 'dislike pris en compte';
+                    } 
                     break;
                 default : //retour initial
                     if(indexInDisliked > notFound) {    //l'utilisateur enlève son dislike
                         sauce.usersDisliked.splice(indexInDisliked, 1);
                         sauce.dislikes = sauce.usersDisliked.length;
+                        feedback = "le dislike n'est plus appliqué";
                     } else {                            //l'utilisateur enlève son like
                         sauce.usersLiked.splice(indexInLiked, 1);
                         sauce.likes = sauce.usersLiked.length;
+                        feedback = "le like n'est plus appliqué";
                     }
             }
 
             sauce.save()
-                .then(() => res.status(201).json({ message : 'like/dislike sauvegardée'}))
+                .then(() => res.status(201).json({ message : feedback }))
                 .catch((error) => res.status(400).json({ error })); //raccourci de {error : error}
             
         })
