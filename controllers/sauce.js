@@ -5,15 +5,14 @@
  *  Auteur      : Vincent Augugliaro
  *  Version     : 0.4
  *  Création    : 07/04/2021
- *  Der. modif  : 16/04/2021
+ *  Der. modif  : 17/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
  *  Dépendances : 'body-parser','../models/sauce','fs'
  *******************************************************************************/
 
 const { json } = require('body-parser');
-const Sauce = require('../models/sauce');   //importation du modèle
+const Sauce = require('../models/sauce');   //importing the model
 const fs = require('fs');
-//const sauce = require('../models/sauce');   // /!\/!\/!\ TROUVER SON ORIGINE OU EFFACER /!\/!\/!\
 
 exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce);
@@ -28,7 +27,7 @@ exports.createSauce = (req, res, next) => {
     });
     sauce.save()
         .then(() => res.status(201).json({ message : 'sauce enregistrée !'}))
-        .catch((error) => res.status(400).json({ error })); //raccourci de {error : error}
+        .catch((error) => res.status(400).json({ error }));
 };
 
 exports.modifySauce = (req, res, next) => {
@@ -38,7 +37,7 @@ exports.modifySauce = (req, res, next) => {
             imageUrl : `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
         } : { ...req.body };
     
-    /* Dans le cas d'un changement d'image, on va supprimer l'ancienne avant d'en perdre la trace */
+    /* In the case of a change of image, we will delete the old one before losing track of it */
     let info = '';
     if(req.file) {
         Sauce.findOne({ _id : req.params.id })
@@ -113,12 +112,12 @@ exports.likeSauce = (req, res, next) => {
                         feedback = 'dislike pris en compte';
                     } 
                     break;
-                default : //retour initial
-                    if(indexInDisliked > notFound) {    //l'utilisateur enlève son dislike
+                default : //initial return
+                    if(indexInDisliked > notFound) {    //the user removes his dislike
                         sauce.usersDisliked.splice(indexInDisliked, 1);
                         sauce.dislikes = sauce.usersDisliked.length;
                         feedback = "le dislike n'est plus appliqué";
-                    } else {                            //l'utilisateur enlève son like
+                    } else {                            //the user removes his like
                         sauce.usersLiked.splice(indexInLiked, 1);
                         sauce.likes = sauce.usersLiked.length;
                         feedback = "le like n'est plus appliqué";
@@ -127,7 +126,7 @@ exports.likeSauce = (req, res, next) => {
 
             sauce.save()
                 .then(() => res.status(201).json({ message : feedback }))
-                .catch((error) => res.status(400).json({ error })); //raccourci de {error : error}
+                .catch((error) => res.status(400).json({ error }));
             
         })
         .catch((error) => res.status(404).json({ error }));

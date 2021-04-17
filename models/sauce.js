@@ -3,9 +3,9 @@
  *  Description : schéma de données strict
  *  Type        : JavaScript
  *  Auteur      : Vincent Augugliaro
- *  Version     : 0.2
+ *  Version     : 0.3
  *  Création    : 07/04/2021
- *  Der. modif  : 10/04/2021
+ *  Der. modif  : 17/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
  *  Dépendances : 'mongoose'
  *******************************************************************************/
@@ -13,7 +13,6 @@
 const mongoose = require('mongoose');
 
 const sauceSchema = mongoose.Schema({
-    //id : { type : mongoose.ObjectId, required : true },
     userId : { type : String, required : true },
     name : { type : String, required : true },
     manufacturer : { type : String, required : true },
