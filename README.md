@@ -46,10 +46,6 @@ Then start the backend server:
 node server.js
 ```
 
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
 ## Built With
 
 * [Mongo](https://docs.atlas.mongodb.com/) - a fully-managed cloud database
