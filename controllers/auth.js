@@ -3,23 +3,25 @@
  *  Description : logique métier des routes
  *  Type        : JavaScript
  *  Auteur      : Vincent Augugliaro
- *  Version     : 0.4
+ *  Version     : 0.5
  *  Création    : 07/04/2021
- *  Der. modif  : 16/04/2021
+ *  Der. modif  : 17/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
- *  Dépendances : 'password-validator','bcrypt','jsonwebtoken','../models/auth'
+ *  Dépendances : 'password-validator','bcrypt','jsonwebtoken','../models/auth','dotenv'
  *******************************************************************************/
 
-/* Importation des middlewares relatifs à la SECURITE */
-const passwordValidator = require('password-validator');//A2:2017
-const bcrypt = require('bcrypt');                       //A2:2017
+ require('dotenv').config();
+
+/* Import of SECURITY-related middleware */
+const passwordValidator = require('password-validator');//A2:2017 OWASP
+const bcrypt = require('bcrypt');                       //A2:2017 OWASP
 
 const emailValidator = require("email-validator");
 const jwt = require('jsonwebtoken');
 
 const Auth = require('../models/auth');
 
-/* Création d'un schéma pour le password */
+/* Creating a scheme for the password */
 const schema = new passwordValidator();
 schema
     .is().min(12)
@@ -66,8 +68,8 @@ exports.login = (req, res, next) => {
                         userId : auth._id,
                         token : jwt.sign(
                             { userId : auth._id },
-                            'RANDOM_TOKEN_SECRET',
-                            { expiresIn : '24h'}
+                            process.env.TOKEN_KEY,
+                            { expiresIn : process.env.TOKEN_DURATION }
                         )
                     });
                 })

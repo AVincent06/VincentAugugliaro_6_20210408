@@ -3,17 +3,17 @@
  *  Description : point d'entrée du serveur backend
  *  Type        : JavaScript
  *  Auteur      : Vincent Augugliaro
- *  Version     : 0.1
+ *  Version     : 0.2
  *  Création    : 07/04/2021
- *  Der. modif  : 07/04/2021
+ *  Der. modif  : 17/04/2021
  *  Repository  : https://github.com/AVincent06/VincentAugugliaro_6_07042021
  *  Dépendances : 'http', './app'
  *******************************************************************************/
 
-const http = require('http');   //import du package http natif de Node
+const http = require('http');   //import of the native Node http package
 const app = require('./app');
 
-/* renvoie un port valide */
+/* returns a valid port */
 const normalizePort = (val) => {
     const port = parseInt(val, 10);
     if(isNaN(port)) return val;
@@ -23,7 +23,7 @@ const normalizePort = (val) => {
 const port = normalizePort(process.env.PORT || process.env.APP_PORT);
 app.set('port', port);
 
-/* recherche, gère, enregistre les erreurs sur le serveur */
+/* search, manage, record errors on the server */
 const errorHandler = (error) => {
     if(error.syscall !== 'listen') throw error;
     const address = server.address();
@@ -42,9 +42,9 @@ const errorHandler = (error) => {
     }
 };
 
-const server = http.createServer(app);  //création du serveur
+const server = http.createServer(app);  //server creation
 
-/* écouteur d'évènement */
+/* event listener */
 server.on('error', errorHandler);
 server.on('listening', () => {
     const address = server.address();
@@ -52,4 +52,4 @@ server.on('listening', () => {
     console.log('Listening on ' + bind);
 });
 
-server.listen(port);    //écoute du serveur sur un port
+server.listen(port);    //listening to the server on a port
